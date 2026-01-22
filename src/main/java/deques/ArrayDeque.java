@@ -13,7 +13,7 @@ public class ArrayDeque<E> implements Deque<E> {
     /**
      * The underlying array of elements stored in this deque.
      */
-    private E[] data;
+    public E[] data;
     /**
      * The index for the next element to be inserted by addFirst.
      */
@@ -157,10 +157,19 @@ public class ArrayDeque<E> implements Deque<E> {
     @SuppressWarnings("unchecked")
     private void resize(int capacity) {
         E[] newData = (E[]) new Object[capacity];
-        int i = increment(front, size);
-        for (int newIndex = 0; newIndex < size; newIndex += 1) {
-            newData[newIndex] = data[i];
-            i = increment(i, size);
+        if (needsDownsize()){
+            int p = increment(front, data.length);
+            for (int newIndex = 0; newIndex < size; newIndex += 1) {
+                newData[newIndex] = data[p];
+                p = increment(p, data.length);
+            }
+        }
+        else{
+            int i = increment(front, size);
+            for (int newIndex = 0; newIndex < size; newIndex += 1) {
+                newData[newIndex] = data[i];
+                i = increment(i, size);
+            }
         }
         front = newData.length - 1;
         back = size;
